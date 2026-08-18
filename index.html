@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coupe du Monde 2026 — Plans de leçons Maroc</title>
+  <meta name="description" content="Plans de leçons interactifs sur la Coupe du Monde 2026 et le football marocain — disponibles en français, anglais et espagnol." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-pattern" aria-hidden="true">
+    <div class="floating-balls" id="floating-balls"></div>
+  </div>
+
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <a class="logo" href="#">
+        <div class="logo-icon">⚽</div>
+        <div class="logo-text">
+          CDM 2026
+          <span>Maroc · Lesson Plans</span>
+        </div>
+      </a>
+
+      <nav class="lang-switcher" aria-label="Choisir la langue">
+        <button class="lang-btn active" data-lang="fr" aria-pressed="true">
+          <span class="flag">🇫🇷</span>
+          <span class="lang-label">Français</span>
+        </button>
+        <button class="lang-btn" data-lang="en" aria-pressed="false">
+          <span class="flag">🇬🇧</span>
+          <span class="lang-label">English</span>
+        </button>
+        <button class="lang-btn" data-lang="es" aria-pressed="false">
+          <span class="flag">🇪🇸</span>
+          <span class="lang-label">Español</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn-download" id="download-btn" href="documents/fr.docx" download="Plans_Lecons_CDM2026_Maroc_FR.docx">
+          ⬇ <span>Télécharger</span>
+        </a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge" id="hero-badge">Éducation · Coupe du Monde 2026</div>
+      <h1 id="hero-title">Plans de leçons — Maroc 🇲🇦</h1>
+      <p id="hero-subtitle">
+        Découvrez 5 leçons interactives sur la Coupe du Monde 2026, la culture footballistique marocaine et le parcours des Lions de l'Atlas.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="num">5</div>
+          <div class="label" id="stat-lessons-label">Leçons</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">3</div>
+          <div class="label" id="stat-langs-label">Langues</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="stat-topic-val">CDM 2026</div>
+          <div class="label" id="stat-topic-label">Thème</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main layout -->
+    <div class="main-layout">
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-title" id="sidebar-title">Sommaire</div>
+        <ul class="toc-list" id="toc-list"></ul>
+      </aside>
+
+      <div class="viewer-wrap" id="viewer-wrap">
+        <div class="viewer-toolbar">
+          <div class="viewer-title">
+            <span class="dot"></span>
+            <span id="viewer-title">Document en cours</span>
+            <span class="viewer-section-label" id="viewer-section-label"></span>
+          </div>
+          <span class="viewer-scroll-hint" id="scroll-hint">Faites défiler pour lire ↓</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="viewer" id="viewer"></div>
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="loader-ball"></div>
+          <div class="loading-text" id="loading-text">Chargement du document…</div>
+          <div class="loading-sub" id="loading-sub">Préparation de votre expérience football ⚽</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p id="footer-text">Coupe du Monde FIFA 2026 · Plans de leçons — Maroc</p>
+    </footer>
+  </div>
+
+  <!-- docx-preview -->
+  <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://unpkg.com/docx-preview@0.3.3/dist/docx-preview.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
