@@ -293,13 +293,14 @@ function scrollViewerToSection(sectionId, smooth = true) {
 
   if (!sectionElements[sectionId]) sectionElements[sectionId] = target;
 
+  const behavior = smooth ? "smooth" : "auto";
   const offset = getElementScrollTop(target, viewer) - 24;
-  const previousScrollTop = viewer.scrollTop;
-  viewer.scrollTo({ top: Math.max(0, offset), behavior: smooth ? "smooth" : "auto" });
 
-  // Depending on the rendered DOCX layout, the page or the viewer may own scrolling.
-  if (viewer.scrollTop === previousScrollTop && target.getBoundingClientRect().top > 120) {
-    target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  if (viewer.scrollHeight > viewer.clientHeight + 1) {
+    viewer.scrollTo({ top: Math.max(0, offset), behavior });
+  } else {
+    const pageTop = window.scrollY + target.getBoundingClientRect().top - 80;
+    window.scrollTo({ top: Math.max(0, pageTop), behavior });
   }
 
   setActiveSection(sectionId);
@@ -315,7 +316,7 @@ function goToSection(sectionId) {
 
   const tryScroll = () => {
     indexSections();
-    return scrollViewerToSection(sectionId, true);
+    return scrollViewerToSection(sectionId, false);
   };
 
   if (tryScroll()) return;
