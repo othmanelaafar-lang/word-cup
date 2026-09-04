@@ -11,5 +11,6 @@ echo.
 echo  Appuyez sur Ctrl+C pour arreter le serveur.
 echo.
 cd /d "%~dp0"
-start http://localhost:8080
-python -m http.server 8080
+start "Coupe du Monde 2026 - Serveur" cmd /k python -m http.server 8080
+timeout /t 1 /nobreak >nul
+start "" http://localhost:8080

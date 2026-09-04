@@ -111,11 +111,12 @@ const CONFIG = {
   },
 };
 
-let currentLang = CONFIG.defaultLang;
+let currentLang = null;
 let isLoading = false;
 let sectionElements = {};
 let scrollSaveTimer = null;
 let activeSectionId = null;
+let pendingSectionId = null;
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -129,7 +130,13 @@ function sectionKey(lang) {
 }
 
 function normalizeText(text) {
-  return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
+  return (text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[—–-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 /* ── Floating balls ── */
@@ -210,7 +217,8 @@ function matchesSectionHead(text, sectionId, labelNorm) {
   const labelStart = labelNorm.split(":")[0].trim();
 
   if (head.startsWith(labelStart)) return true;
-  if (keywords.some((k) => {
+  if (keywords.some((keyword) => {
+    const k = normalizeText(keyword);
     const idx = head.indexOf(k);
     return idx >= 0 && idx < 40;
   })) return true;
@@ -251,6 +259,17 @@ function indexSections() {
       }
     }
   }
+
+  // Word can render a heading as a generic paragraph; use the document order
+  // as a final fallback so every TOC item remains clickable.
+  const missingItems = cfg.toc.filter((item) => !sectionElements[item.id]);
+  const unusedCandidates = candidates.filter((el) => !el.id);
+  missingItems.forEach((item, index) => {
+    const el = unusedCandidates[index];
+    if (!el) return;
+    el.id = `section-${item.id}`;
+    sectionElements[item.id] = el;
+  });
 }
 
 function getSectionLabel(sectionId) {
@@ -275,14 +294,24 @@ function scrollViewerToSection(sectionId, smooth = true) {
   if (!sectionElements[sectionId]) sectionElements[sectionId] = target;
 
   const offset = getElementScrollTop(target, viewer) - 24;
+  const previousScrollTop = viewer.scrollTop;
   viewer.scrollTo({ top: Math.max(0, offset), behavior: smooth ? "smooth" : "auto" });
+
+  // Depending on the rendered DOCX layout, the page or the viewer may own scrolling.
+  if (viewer.scrollTop === previousScrollTop && target.getBoundingClientRect().top > 120) {
+    target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  }
+
   setActiveSection(sectionId);
   updateProgressBar();
   return true;
 }
 
 function goToSection(sectionId) {
-  if (isLoading) return;
+  if (isLoading) {
+    pendingSectionId = sectionId;
+    return;
+  }
 
   const tryScroll = () => {
     indexSections();
@@ -439,6 +468,12 @@ async function loadDocument(lang) {
       setupViewerScrollListener();
       restoreReadingState();
       updateProgressBar();
+
+      if (pendingSectionId) {
+        const sectionId = pendingSectionId;
+        pendingSectionId = null;
+        scrollViewerToSection(sectionId, false);
+      }
     });
   } catch (err) {
     viewer.innerHTML = `
